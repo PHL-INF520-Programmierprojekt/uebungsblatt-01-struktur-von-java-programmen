@@ -11,8 +11,15 @@
 			"installMaven": "false",
 			"installGradle": "true"
 		},
-		"ghcr.io/devcontainers-contrib/features/ant-sdkman:2": {}
-	}
+		// "ghcr.io/devcontainers-contrib/features/ant-sdkman:2": {}
+	},
+
+	"customizations": {
+		"vscode": {
+			"extensions": ["github.classroom"]
+		}
+	},
+
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
