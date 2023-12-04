@@ -3,11 +3,15 @@ package de.phl.programmingproject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 /**
@@ -107,6 +111,49 @@ public class TestUtils {
             fail(String.format("Enum '%s' does not contain the value '%s'", enumClazz.getSimpleName(), name));
         }
         return null;
+    }
+
+    /**
+     * Asserts that the given class has the given field with the given type.
+     * @param clazz
+     * @param fieldName
+     * @param fieldType
+     */
+    public static void assertClassHasFieldOfType(Class clazz, String fieldName, Class fieldType){
+        Field[] fields = clazz.getDeclaredFields();
+
+        for (Field field : fields) {
+            if(field.getName().toLowerCase().equals(fieldName.toLowerCase())){
+                assertTrue(fieldType.isAssignableFrom(field.getType()),
+                        String.format("The field '%s' of the class '%s' has the wrong type. The type '%s' was expected.", fieldName,
+                                clazz.getSimpleName(), fieldType));
+                return;
+            }
+        }
+    }
+
+    /**
+     * Asserts that the given class has the given fields with the given types.
+     * @param clazz
+     * @param expectedFieldsMap
+     */
+    public static void assertClassHasFieldsOfType(Class clazz, Map<String, Class> expectedFieldsMap){
+        Field[] fields = clazz.getDeclaredFields();
+        Map<String, Class> fieldsMap = new HashMap<>();
+        for (Field field : fields) {
+            fieldsMap.put(field.getName().toLowerCase(), field.getType());
+        }
+
+        for (Map.Entry<String, Class> stringClassEntry : expectedFieldsMap.entrySet()) {
+            assertTrue(fieldsMap.containsKey(stringClassEntry.getKey().toLowerCase()),
+                    String.format("The field '%s' of the class '%s' does not exist.", stringClassEntry.getKey(),
+                            clazz.getSimpleName()));
+
+            Class type = fieldsMap.get(stringClassEntry.getKey().toLowerCase());
+            assertTrue(type.isAssignableFrom(stringClassEntry.getValue()),
+                    String.format("The field '%s' of the class '%s' has the wrong type. The type '%s' was expected, but it was '%s'.", stringClassEntry.getKey(),
+                            clazz.getSimpleName(), stringClassEntry.getValue(), type.getSimpleName()));
+        }
     }
 
 }
