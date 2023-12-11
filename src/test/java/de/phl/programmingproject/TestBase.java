@@ -40,4 +40,13 @@ public class TestBase {
     public void resetSystemOut() {
         System.setOut(originalOut);
     }
+
+    /**
+     * Returns the class for the given name in the package of this class.
+     * @param className
+     * @return
+     */
+    public Class<?> getClass(String className){
+        return TestUtils.getClassForName(className, this.getClass().getPackage().getName());
+    }
 }

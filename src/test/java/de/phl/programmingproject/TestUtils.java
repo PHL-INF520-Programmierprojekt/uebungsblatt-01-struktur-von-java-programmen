@@ -3,6 +3,7 @@ package de.phl.programmingproject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
@@ -13,7 +14,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Utility class for tests.
@@ -225,6 +227,29 @@ public class TestUtils {
         return method;
     }
 
+    /**
+     * Invokes the given method of the given object with the given arguments.
+     * @param object
+     * @param methodName
+     * @param args
+     * @return
+     */
+    public static Object invokeMethod(Object object, String methodName, Object... args){
+        Class<?>[] params = new Class<?>[args.length];
+        Class<?> clazz = object.getClass();
+
+        for (int i = 0; i < args.length; i++) {
+            params[i] = toPrimitiveType(args[i].getClass());
+        }
+        Method method = getMethod(object.getClass(), methodName, params);
+        try {
+            return method.invoke(object, args);
+        } catch (Exception e) {
+            System.err.println(e);
+            fail(String.format("Could not invoke method '%s' of class '%s' with arguments '%s'", methodName, clazz.getSimpleName(), Arrays.toString(args)));
+        }
+        return null;
+    }
 
     /**
      * Returns the field with the given name. It fails if the field does not exist.
@@ -242,5 +267,75 @@ public class TestUtils {
             fail(String.format("The class '%s' does not contain a field '%s'", clazz.getSimpleName(), fieldName));
         }
         return field;
+    }
+
+    /**
+     * Returns and asserts that the given class has the given constructor with the given parameter types.
+     *
+     * @param clazz
+     * @param parameterTypes
+     * @return
+     */
+    public static Constructor<?> getConstructor(Class<?> clazz, Class<?>... parameterTypes) {
+        Constructor<?> constructor = null;
+        try {
+            constructor = clazz.getDeclaredConstructor(parameterTypes);
+            constructor.setAccessible(true);
+        } catch (NoSuchMethodException e) {
+            fail(String.format("The class '%s' does not contain a constructor with parameters of type '%s'", clazz.getSimpleName(),
+                    Arrays.toString(parameterTypes)));
+        }
+        return constructor;
+    }
+
+    /**
+     * Creates an instance of the given class with the given arguments.
+     * The method asserts that the class has a constructor with the given parameter types.
+     *
+     * @param clazz
+     * @param args
+     * @return
+     */
+    public static Object createInstance(Class<?> clazz, Object... args) {
+        Constructor<?> constructor = null;
+        try {
+            Class<?> params[] = new Class<?>[args.length];
+            for (int i = 0; i < args.length; i++) {
+                Class<?> argsClass = args[i].getClass();
+                Class<?> type = toPrimitiveType(argsClass);
+
+                params[i] = type;
+            }
+            constructor = getConstructor(clazz, params);
+        } catch (Exception e) {
+            System.err.println(e);
+            fail(String.format("The class '%s' does not contain a constructor with parameters of type '%s'", clazz.getSimpleName(),
+                    Arrays.toString(args)));
+        }
+
+        Object instance = null;
+        try {
+            instance = constructor.newInstance(args);
+        } catch (Exception e) {
+            System.err.println(e);
+            fail("Could not create instance of class '" + clazz.getSimpleName() + "' with the given arguments " + Arrays.toString(args));
+        }
+        return instance;
+    }
+
+    /**
+     * Converts the given class to its primitive type if it is a wrapper type.
+     * @param clazz
+     * @return
+     */
+    static Class<?> toPrimitiveType(Class<?> clazz) {
+        if (clazz.equals(Integer.class)) {
+            return int.class;
+        } else if (clazz.equals(Double.class)) {
+            return double.class;
+        } else if (clazz.equals(Boolean.class)) {
+            return boolean.class;
+        }
+        return clazz;
     }
 }
