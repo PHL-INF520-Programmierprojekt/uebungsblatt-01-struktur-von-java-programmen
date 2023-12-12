@@ -224,6 +224,10 @@ public class TestUtils {
             fail(String.format("The class '%s' does not contain a method '%s' with parameters of type '%s'", clazz.getSimpleName(), methodName,
                     Arrays.toString(parameterTypes)));
         }
+        // make the method accessible (e.g., when it is private or protected)
+        if(null != method){
+            method.setAccessible(true);
+        }
         return method;
     }
 
