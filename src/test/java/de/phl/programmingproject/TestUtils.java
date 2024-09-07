@@ -365,4 +365,13 @@ public class TestUtils {
         String fileContent = getFileContentForFileInRootOrSrcDirectory(fileName);
         assertTrue(Pattern.compile(regex).matcher(fileContent).find(), String.format("%s\n%s\n%s", failMessage, "The content of the file was:", fileContent));
     }
+
+    /**
+     * Asserts that the file with the given name exists in the root or src directory.
+     * @param fileName
+     */
+    public static void assertFileExistsInRootOurSrcDirectory(String fileName){
+        assertTrue(fileExistsInRootOrSrcDirectory(fileName),
+                String.format("The file '%s' does not exist in the root (or './src') directory of the project.", fileName));
+    }
 }
