@@ -18,6 +18,7 @@
 		"vscode": {
 			"extensions": [
 				"github.classroom",
+				"oracle.oracle-java",
 				"mermaidchart.vscode-mermaid-chart",
 				"yzhang.markdown-all-in-one"
 			],
