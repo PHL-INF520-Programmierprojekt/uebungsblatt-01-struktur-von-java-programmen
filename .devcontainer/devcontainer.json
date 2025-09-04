@@ -13,10 +13,10 @@
 		}
 		// "ghcr.io/devcontainers-contrib/features/ant-sdkman:2": {}
 	},
-
 	"customizations": {
 		"vscode": {
 			"extensions": [
+				"vscjava.vscode-java-pack",
 				"github.classroom",
 				"oracle.oracle-java",
 				"mermaidchart.vscode-mermaid-chart",

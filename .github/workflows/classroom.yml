@@ -1,0 +1,44 @@
+name: Autograding Tests
+"on":
+  - push
+  - repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Purchase Task 1 Purchase class exists
+        id: purchase-task-1-purchase-class-exists
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Purchase Task 1 Purchase class exists
+          setup-command: chmod +x ./gradlew
+          command: ./gradlew -q test --tests de.phl.programmingproject.syntax.PurchaseTest.task_1_purchase_class_exists
+          timeout: 10
+          max-score: 10
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Java 21 smoke test
+        id: java-21-smoke-test
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Java 21 smoke test
+          setup-command: chmod +x ./gradlew
+          command: ./gradlew -q test --tests de.phl.programmingproject.syntax.Java21SmokeTest
+          timeout: 120
+          max-score: 10
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Autograding Reporter
+        uses: classroom-resources/autograding-grading-reporter@v1
+        env:
+          PURCHASE-TASK-1-PURCHASE-CLASS-EXISTS_RESULTS: "${{steps.purchase-task-1-purchase-class-exists.outputs.result}}"
+          JAVA-21-SMOKE-TEST_RESULTS: "${{steps.java-21-smoke-test.outputs.result}}"
+        with:
+          runners: purchase-task-1-purchase-class-exists,java-21-smoke-test
