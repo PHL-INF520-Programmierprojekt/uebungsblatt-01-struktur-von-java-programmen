@@ -42,7 +42,7 @@ public class Purchase {
 ## Exercise: Working with a Bank Account
 
 You have been given a program that models a bank account.
-The source code is also available in the `de.phl.programmingproject.banking` package.
+The source code is also available in the [`de.phl.programmingproject.banking`](src/main/java/de/phl/programmingproject/banking/) package.
 
 ### Program and Example
 

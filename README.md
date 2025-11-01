@@ -42,7 +42,7 @@ public class Purchase {
 ## Übung: Arbeiten mit einem Bankkonto
 
 Ihnen wurde ein Programm zur Verfügung gestellt, das ein Bankkonto modelliert.
-Der Quellcode ist ebenfalls im Paket `de.phl.programmingproject.banking` verfügbar.
+Der Quellcode ist ebenfalls im Paket [`de.phl.programmingproject.banking`](src/main/java/de/phl/programmingproject/banking/) verfügbar.
 
 
 ### Programm und Beispiel
